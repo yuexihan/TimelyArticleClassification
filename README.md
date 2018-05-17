@@ -14,7 +14,7 @@ volcabulary.py
 cat volcabulary.txt | ../word2vec/fastText/fasttext print-word-vectors words_100.bin > volcabulary.vec
 词汇表大小 3526749
 
-## 将样本按照7:1:3的比例随机分成训练组、验证组、测试组
+## 将样本按照7:1:3的比例随机分成训练组、验证组、测试组，正负样本之比为1:15
 train_validate_test.py
 7297 positive.train
 1042 positive.validate
