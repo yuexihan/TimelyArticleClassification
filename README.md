@@ -19,6 +19,6 @@ train_validate_test.py
 7297 positive.train
 1042 positive.validate
 2084 positive.test
-109340 negative.train
-15620 negative.validate
-31263 negative.test
+103250 negative.train
+14750 negative.validate
+29577 negative.test

@@ -7,11 +7,9 @@ class Loader(object):
         self.default_vec = [0] * 100
         self.w2v = self.load_word_vector()
         self.p_train = self.load_data('data/positive.train', 1)
-        self.p_validate = self.load_data('data/positive.validate', 1)
-        self.p_test = self.load_data('data/positive.test', 1)
         self.n_train = self.load_data('data/negative.train', 0)
-        self.n_validate = self.load_data('data/negative.validate', 0)
-        self.n_test = self.load_data('data/negative.test', 0)
+        self.validate = self.load_data('data/positive.validate', 1) + self.load_data('data/negative.validate', 0)
+        self.test = self.load_data('data/positive.test', 1) + self.load_data('data/negative.test', 0)
         self.w2v = None
         self.p_i = 0
         self.n_i = 0
@@ -33,30 +31,45 @@ class Loader(object):
         f = open(file_name, 'rb')
         data = []
         for line in f:
-            _, rest = line.split('\t', 1)
-            words = rest.split()
+            _, rest = line.split(b'\t', 1)
+            words = rest.split()[:500]
             vectors = []
             for w in words:
                 if w in self.w2v:
                     vectors.append(self.w2v[w])
                 else:
                     vectors.append(self.default_vec)
-            data.append((vectors, [label]))
+            data.append((vectors, label))
         return data
 
     def next_batch(self):
-        result = []
+        inputs = []
+        lens = []
+        labels = []
 
         for _ in range(4):
             if self.p_i == 0:
                 random.shuffle(self.p_train)
-            result.append(self.p_train[self.p_i])
+            input, label = self.p_train[self.p_i]
             self.p_i = (self.p_i + 1) % len(self.p_train)
+            inputs.append(input)
+            lens.append(len(input))
+            labels.append(label)
 
         for _ in range(60):
             if self.n_i == 0:
                 random.shuffle(self.n_train)
-            result.append(self.n_train[self.n_i])
+            input, label = self.n_train[self.n_i]
             self.n_i = (self.n_i + 1) % len(self.n_train)
+            inputs.append(input)
+            lens.append(len(input))
+            labels.append(label)
 
-        return result
+        max_len = max(lens)
+        self.padding(inputs, max_len)
+
+        return inputs, lens, labels
+
+    def padding(self, inputs, max_len):
+        for input in inputs:
+            input.extend([self.default_vec] * (max_len - len(input)))

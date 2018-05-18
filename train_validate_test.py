@@ -1,9 +1,9 @@
 import random
 
-f_p = open('positive.data', 'rb')
-f_p_train = open('positive.train', 'wb')
-f_p_validate = open('positive.validate', 'wb')
-f_p_test = open('positive.test', 'wb')
+f_p = open('data/positive.data', 'rb')
+f_p_train = open('data/positive.train', 'wb')
+f_p_validate = open('data/positive.validate', 'wb')
+f_p_test = open('data/positive.test', 'wb')
 
 lines = []
 for line in f_p:
@@ -30,14 +30,16 @@ f_p_train.close()
 f_p_validate.close()
 f_p_test.close()
 
-f_n = open('negative.data', 'rb')
-f_n_train = open('negative.train', 'wb')
-f_n_validate = open('negative.validate', 'wb')
-f_n_test = open('negative.test', 'wb')
+f_n = open('data/negative.data', 'rb')
+f_n_train = open('data/negative.train', 'wb')
+f_n_validate = open('data/negative.validate', 'wb')
+f_n_test = open('data/negative.test', 'wb')
 
 for line in f_n:
+    if len(line.split()) < 50:
+        continue
     lines.append(line)
-    if len(lines) == 178:
+    if len(lines) == 177:
         random.shuffle(lines)
         for x in lines[:7]:
             f_n_train.write(x)
