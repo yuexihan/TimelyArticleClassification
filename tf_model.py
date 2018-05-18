@@ -7,12 +7,16 @@ import time
 class CnnMaxPool(object):
     def __init__(self):
         self.options = options
-        self.loader = Loader(sanity_check=True)
+        self.loader = Loader(sanity_check=False)
         self.sess = tf.Session()
+        self.embedding = tf.constant(self.loader.id2v, dtype=tf.float32)
         self.build_graph()
 
     def forward(self, inputs):
-        # 一维cnn层
+        # embedding_lookup
+        inputs = tf.nn.embedding_lookup(self.embedding, inputs)
+
+        # 一维卷积网络
         with tf.variable_scope('cnn') as scope:
             try:
                 conv_W_1 = tf.get_variable(name='conv_W_1', shape=(4, self.options['word_dimension'], self.options['channel_1']))
@@ -30,7 +34,6 @@ class CnnMaxPool(object):
                 conv_W_3 = tf.get_variable(name='conv_W_3', shape=(12, self.options['word_dimension'], self.options['channel_3']))
                 conv_b_3 = tf.get_variable(name='conv_b_3', shape=self.options['channel_3'], initializer=tf.zeros_initializer())
 
-            # 一维卷积网络
             conv_1 = tf.tanh(tf.nn.conv1d(inputs, conv_W_1, 1, 'SAME') + conv_b_1)
             conv_2 = tf.tanh(tf.nn.conv1d(inputs, conv_W_2, 1, 'SAME') + conv_b_2)
             conv_3 = tf.tanh(tf.nn.conv1d(inputs, conv_W_3, 1, 'SAME') + conv_b_3)
@@ -54,7 +57,7 @@ class CnnMaxPool(object):
         return logits
 
     def build_graph(self):
-        self.inputs = tf.placeholder(tf.float32, (None, None, self.options['word_dimension']))
+        self.inputs = tf.placeholder(tf.int32, (None, None))
         self.lens = tf.placeholder(tf.int32, [None])
         self.labels = tf.placeholder(tf.float32, [None])
 
@@ -81,7 +84,7 @@ class CnnMaxPool(object):
                     self.labels: labels,
                 }
                 loss, _ = sess.run([self.loss, self.train_step], feed_dict=feed_dict)
-                if step % 10 == 0:
+                if step % 1000 == 0 and step != 0:
                     accuracy, recall, f1 = self.test(self.loader.validate)
                     now = time.time()
                     last_time, rate = now, 4*10/(now-last_time)
@@ -101,7 +104,7 @@ class CnnMaxPool(object):
             inputs.append(input)
             lens.append(len(input))
             labels.append(label)
-            if len(inputs) >= 64:
+            if len(inputs) >= 1024:
                 print('hello')
                 max_len = max(lens)
                 self.loader.padding(inputs, max_len)
@@ -147,6 +150,7 @@ class CnnMaxPool(object):
         else:
             f1 = 2 * accuracy * recall / (accuracy + recall)
         return accuracy, recall, f1
+
 
 def main(_):
     model = CnnMaxPool()
