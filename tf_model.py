@@ -109,7 +109,6 @@ class CnnMaxPool(object):
             lens.append(len(input))
             labels.append(label)
             if len(inputs) >= 128:
-                print('hello')
                 max_len = max(lens)
                 self.loader.padding(inputs, max_len)
                 feed_dict = {
@@ -136,6 +135,7 @@ class CnnMaxPool(object):
                 self.inputs: inputs,
                 self.lens: lens,
                 self.labels: labels,
+                self.keep_prob: 1.0,
             }
             predictions = sess.run(self.predictions, feed_dict=feed_dict)
             for p, l in zip(predictions, labels):
