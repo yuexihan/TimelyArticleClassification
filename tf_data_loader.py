@@ -22,7 +22,7 @@ class Loader(object):
         f.readline()
         for line in f:
             line = line.split()
-            assert len(line) == 101
+            assert len(line) == 301
             w = line[0]
             v = [float(x) for x in line[1:]]
             w2id[w] = len(w2id)
