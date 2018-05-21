@@ -108,7 +108,7 @@ class CnnMaxPool(object):
             inputs.append(input)
             lens.append(len(input))
             labels.append(label)
-            if len(inputs) >= 1024:
+            if len(inputs) >= 128:
                 print('hello')
                 max_len = max(lens)
                 self.loader.padding(inputs, max_len)
