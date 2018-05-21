@@ -15,6 +15,7 @@ class CnnMaxPool(object):
     def forward(self, inputs):
         # embedding_lookup
         inputs = tf.nn.embedding_lookup(self.embedding, inputs)
+        inputs = tf.nn.dropout(inputs, self.keep_prob)
 
         # 一维卷积网络
         with tf.variable_scope('cnn') as scope:
@@ -60,6 +61,7 @@ class CnnMaxPool(object):
         self.inputs = tf.placeholder(tf.int32, (None, None))
         self.lens = tf.placeholder(tf.int32, [None])
         self.labels = tf.placeholder(tf.float32, [None])
+        self.keep_prob = tf.placeholder(tf.float32, [])
 
         self.logits = self.forward(self.inputs)
         self.loss = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(self.labels, self.logits, self.options['pos_weight']))
@@ -82,6 +84,7 @@ class CnnMaxPool(object):
                     self.inputs: inputs,
                     self.lens: lens,
                     self.labels: labels,
+                    self.keep_prob: 0.5,
                 }
                 loss, _ = sess.run([self.loss, self.train_step], feed_dict=feed_dict)
                 if step % 200 == 0 and step != 0:
@@ -113,6 +116,7 @@ class CnnMaxPool(object):
                     self.inputs: inputs,
                     self.lens: lens,
                     self.labels: labels,
+                    self.keep_prob: 1.0,
                 }
                 predictions = sess.run(self.predictions, feed_dict=feed_dict)
                 for p, l in zip(predictions, labels):
