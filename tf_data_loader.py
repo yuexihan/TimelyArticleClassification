@@ -16,9 +16,10 @@ class Loader(object):
         print('finish initialize data loader')
 
     def load_word_vector(self):
-        f = open('data/volcabulary.vec', 'rb')
+        f = open('data/words_100.vec', 'rb')
         w2id = {'<UNKNOWN>': 0}
         id2v = [[0.] * 100]
+        f.readline()
         for line in f:
             line = line.split()
             assert len(line) == 101

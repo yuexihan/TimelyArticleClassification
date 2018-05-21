@@ -1,7 +1,7 @@
 options = {
-    'channel_1': 512,
-    'channel_2': 512,
-    'channel_3': 512,
+    'channel_1': 256,
+    'channel_2': 256,
+    'channel_3': 256,
     'word_dimension': 100,
     'pos_weight': 15,
     'epoch': 5,
