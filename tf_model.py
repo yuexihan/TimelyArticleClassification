@@ -90,7 +90,7 @@ class CnnMaxPool(object):
                     last_time, rate = now, 4*10/(now-last_time)
                     print('Step %6d: loss = %3.2f, accuracy = %2.3f, recall = %2.3f, f1 = %2.3f, docs/step = %8.2f' % (step, loss, accuracy, recall, f1, rate))
                 print(step, loss)
-        tf.train.Saver(sess, 'data/model')
+        tf.train.Saver().save(sess, 'data/model')
 
     def test(self, data_set):
         sess = self.sess
