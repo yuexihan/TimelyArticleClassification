@@ -84,7 +84,7 @@ class CnnMaxPool(object):
                     self.labels: labels,
                 }
                 loss, _ = sess.run([self.loss, self.train_step], feed_dict=feed_dict)
-                if step % 200 == 0 and step != 0:
+                if step % 900 == 0 and step != 0:
                     accuracy, recall, f1 = self.test(self.loader.validate)
                     now = time.time()
                     last_time, rate = now, 4*10/(now-last_time)
