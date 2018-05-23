@@ -12,7 +12,7 @@ class Loader(object):
         self.test = self.load_data('data/positive.test', 1) + self.load_data('data/negative.test', 0)
         self.p_i = 0
         self.n_i = 0
-        self.w2id = None
+        self.w2id = [([i], w) for w, i in self.w2id.items()]
         print('finish initialize data loader')
 
     def load_word_vector(self):

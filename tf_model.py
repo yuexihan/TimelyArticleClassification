@@ -19,24 +19,24 @@ class CnnMaxPool(object):
         # 一维卷积网络
         with tf.variable_scope('cnn') as scope:
             try:
-                conv_W_1 = tf.get_variable(name='conv_W_1', shape=(2, self.options['word_dimension'], self.options['channel_1']))
+                conv_W_1 = tf.get_variable(name='conv_W_1', shape=(1, self.options['word_dimension'], self.options['channel_1']))
                 conv_b_1 = tf.get_variable(name='conv_b_1', shape=self.options['channel_1'], initializer=tf.zeros_initializer())
-                conv_W_2 = tf.get_variable(name='conv_W_2', shape=(2, self.options['word_dimension'], self.options['channel_2']))
+                conv_W_2 = tf.get_variable(name='conv_W_2', shape=(1, self.options['word_dimension'], self.options['channel_2']))
                 conv_b_2 = tf.get_variable(name='conv_b_2', shape=self.options['channel_2'], initializer=tf.zeros_initializer())
-                conv_W_3 = tf.get_variable(name='conv_W_3', shape=(2, self.options['word_dimension'], self.options['channel_3']))
+                conv_W_3 = tf.get_variable(name='conv_W_3', shape=(1, self.options['word_dimension'], self.options['channel_3']))
                 conv_b_3 = tf.get_variable(name='conv_b_3', shape=self.options['channel_3'], initializer=tf.zeros_initializer())
             except ValueError:
                 scope.reuse_variables()
-                conv_W_1 = tf.get_variable(name='conv_W_1', shape=(2, self.options['word_dimension'], self.options['channel_1']))
+                conv_W_1 = tf.get_variable(name='conv_W_1', shape=(1, self.options['word_dimension'], self.options['channel_1']))
                 conv_b_1 = tf.get_variable(name='conv_b_1', shape=self.options['channel_1'], initializer=tf.zeros_initializer())
-                conv_W_2 = tf.get_variable(name='conv_W_2', shape=(2, self.options['word_dimension'], self.options['channel_2']))
+                conv_W_2 = tf.get_variable(name='conv_W_2', shape=(1, self.options['word_dimension'], self.options['channel_2']))
                 conv_b_2 = tf.get_variable(name='conv_b_2', shape=self.options['channel_2'], initializer=tf.zeros_initializer())
-                conv_W_3 = tf.get_variable(name='conv_W_3', shape=(2, self.options['word_dimension'], self.options['channel_3']))
+                conv_W_3 = tf.get_variable(name='conv_W_3', shape=(1, self.options['word_dimension'], self.options['channel_3']))
                 conv_b_3 = tf.get_variable(name='conv_b_3', shape=self.options['channel_3'], initializer=tf.zeros_initializer())
 
-            conv_1 = tf.tanh(tf.nn.conv1d(inputs, conv_W_1, 1, 'SAME') + conv_b_1)
-            conv_2 = tf.tanh(tf.nn.conv1d(inputs, conv_W_2, 1, 'SAME') + conv_b_2)
-            conv_3 = tf.tanh(tf.nn.conv1d(inputs, conv_W_3, 1, 'SAME') + conv_b_3)
+            conv_1 = tf.sigmoid(tf.nn.conv1d(inputs, conv_W_1, 1, 'SAME') + conv_b_1)
+            conv_2 = tf.sigmoid(tf.nn.conv1d(inputs, conv_W_2, 1, 'SAME') + conv_b_2)
+            conv_3 = tf.sigmoid(tf.nn.conv1d(inputs, conv_W_3, 1, 'SAME') + conv_b_3)
 
         pool_1 = tf.reduce_max(conv_1, 1)
         pool_2 = tf.reduce_max(conv_2, 1)
@@ -90,7 +90,7 @@ class CnnMaxPool(object):
                     last_time, rate = now, 4*10/(now-last_time)
                     print('Step %6d: loss = %3.2f, accuracy = %2.3f, recall = %2.3f, f1 = %2.3f, docs/step = %8.2f' % (step, loss, accuracy, recall, f1, rate))
                 print(step, loss)
-        tf.train.Saver().save(sess, 'data/model')
+        tf.train.Saver().save(sess, 'data/model_1_256_sigmoid')
 
     def test(self, data_set):
         sess = self.sess
