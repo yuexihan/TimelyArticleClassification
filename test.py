@@ -35,6 +35,11 @@ if len(inputs) > 0:
 
 result.sort(key=(lambda x: x[1]), reverse=True)
 
-with open('words_score.txt', 'w') as f:
-    for r in result:
-        f.write(str(r) + '\n')
+with open('words-score-sigmoid.txt', 'wb') as f:
+    for w, i in result:
+        if isinstance(w, str):
+            w = w.encode('utf-8')
+        f.write(w)
+        f.write(b'\n')
+        f.write(str(i).encode('utf-8'))
+        f.write(b'\n')
