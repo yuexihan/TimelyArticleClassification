@@ -13,7 +13,7 @@ for file_name in tqdm(os.listdir(folder)):
         if create_time:
             create_time = date.fromtimestamp(int(create_time))
             if create_time not in date_to_file:
-                date_to_file[create_time] = open(os.path.join(folder, create_time.strftime('%Y%m%d')))
+                date_to_file[create_time] = open(os.path.join(folder, create_time.strftime('%Y%m%d')), 'w', encoding='utf-8')
             f = date_to_file[create_time]
             f.write(line)
 
