@@ -15,11 +15,12 @@ if __name__ == '__main__':
         'key': 'new_timely_ysz',
         'cacheId': 0,
         'pageSize': 100,
+        'cid': 1000,
     }
 
     url = 'http://kandian.qq.com/qz_kandian_ext/kandian_ext/GetTimelyDocJson'
 
-    f = open('positive.txt', 'w')
+    f = open('positive_0613.txt', 'w')
     i = 1
     while True:
         data['pageNum'] = i
@@ -27,10 +28,10 @@ if __name__ == '__main__':
         try:
             innerIds = parse(resp.content)
         except Exception:
-            print i, resp.content
+            print(i, resp.content)
         if not innerIds:
             break
         for id in innerIds:
             f.write(id + '\n')
-        print i, 'ok'
+        print(i, 'ok')
         i += 1
